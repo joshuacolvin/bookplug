@@ -1,0 +1,70 @@
+<div mat-dialog-title>{{ modalTitle }}</div>
+<mat-dialog-content>
+  <form *ngIf="form" [formGroup]="form">
+    <mat-form-field class="input-full-width">
+      <input matInput placeholder="Title" formControlName="title" />
+    </mat-form-field>
+    <mat-form-field class="input-full-width">
+      <input matInput placeholder="Author" formControlName="author" />
+    </mat-form-field>
+
+    <div formArrayName="recommendations">
+      <mat-toolbar>
+        <span class="title">Recommendations</span>
+        <span class="spacer"></span>
+        <button
+          mat-flat-button
+          class="right"
+          color="accent"
+          align="end"
+          (click)="addRecommendation()"
+        >
+          Add recommendation
+        </button>
+      </mat-toolbar>
+      <div
+        *ngFor="let recommendation of recommendations.controls; let i = index"
+        class="recommendation"
+      >
+        <div>
+          <span class="recommendation-title"
+            >Recommendation {{ i + 1 }}
+            <button
+              mat-icon-button
+              color="warn"
+              *ngIf="recommendations.controls.length > 1"
+              (click)="removeRecommendation(i)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button></span
+          >
+        </div>
+        <div [formGroupName]="i">
+          <mat-form-field class="input-full-width">
+            <input
+              matInput
+              placeholder="Source"
+              formControlName="source"
+              required
+            />
+            <mat-error *ngIf="recommendation.get('source').invalid"
+              >Source is required</mat-error
+            >
+          </mat-form-field>
+          <mat-form-field class="input-full-width">
+            <input matInput placeholder="Url" formControlName="url" />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button *ngIf="data" mat-flat-button color="warn" (click)="deleteBook()">
+    Delete
+  </button>
+  <button mat-flat-button cdkFocusInitial color="primary" (click)="saveBook()">
+    Save
+  </button>
+</mat-dialog-actions>
