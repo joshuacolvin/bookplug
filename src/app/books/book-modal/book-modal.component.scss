@@ -2,6 +2,10 @@
   flex: 1 1 auto;
 }
 
+.recommendations {
+  margin-top: 40px;
+}
+
 .recommendation {
   margin-top: 20px;
   padding: 0 16px;
@@ -13,5 +17,6 @@
 }
 
 .recommendation-title {
-  font-weight: 500;
+  font-weight: 400;
+  font-size: 14px;
 }

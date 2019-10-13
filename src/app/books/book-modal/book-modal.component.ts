@@ -83,6 +83,7 @@ export class BookModalComponent implements OnInit {
   }
 
   private addBook(): void {
+    console.log('adding');
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;

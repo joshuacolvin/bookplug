@@ -1,21 +1,47 @@
-<button mat-flat-button color="accent" (click)="openEditModal()">
-  Add Book
+<button mat-button class="link-btn" (click)="openEditModal()">
+  <mat-icon>add</mat-icon> Add book
 </button>
 
 <div class="book-list">
-  <table mat-table [dataSource]="books" multiTemplateDataRows>
+  <form [formGroup]="form">
+    <mat-form-field class="input-full-width">
+      <input
+        matInput
+        formControlName="filter"
+        (keyup)="applyFilter($event.target.value)"
+        placeholder="Filter"
+      />
+      <button
+        mat-button
+        *ngIf="form.get('filter').value"
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        (click)="clearFilter()"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </form>
+  <table
+    mat-table
+    matSort
+    matSortActive="title"
+    matSortDirection="asc"
+    [dataSource]="books"
+  >
     <ng-container matColumnDef="title">
-      <th mat-header-cell *matHeaderCellDef>Title</th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>Title</th>
       <td mat-cell *matCellDef="let element">{{ element.title }}</td>
     </ng-container>
 
     <ng-container matColumnDef="author">
-      <th mat-header-cell *matHeaderCellDef>Author</th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>Author</th>
       <td mat-cell *matCellDef="let element">{{ element.author }}</td>
     </ng-container>
 
     <ng-container matColumnDef="recommendations">
-      <th mat-header-cell *matHeaderCellDef>Recommendations</th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>Recommendations</th>
       <td mat-cell *matCellDef="let element">
         {{ element.recommendations.length }}
       </td>
@@ -24,12 +50,11 @@
     <ng-container matColumnDef="details">
       <th mat-header-cell *matHeaderCellDef>Details</th>
       <td mat-cell *matCellDef="let element">
-        <a [routerLink]="['/books', element.id]" mat-button>show</a>
+        <a [routerLink]="['/books', element.id]" mat-button>view</a>
       </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-
   </table>
 </div>

@@ -1,6 +1,7 @@
-import { MatDialog } from '@angular/material';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { MatDialog, MatTableDataSource, MatSort } from '@angular/material';
 import { BooksService } from './../books.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { IBook } from '../book.types';
 import { BookModalComponent } from '../book-modal/book-modal.component';
 
@@ -10,18 +11,38 @@ import { BookModalComponent } from '../book-modal/book-modal.component';
   styleUrls: ['./book-list.component.scss'],
 })
 export class BookListComponent implements OnInit {
-  constructor(private booksService: BooksService, private dialog: MatDialog) {}
+  constructor(
+    private booksService: BooksService,
+    private dialog: MatDialog,
+    private fb: FormBuilder,
+  ) {}
 
-  public books: IBook[];
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+
+  public books: MatTableDataSource<IBook>;
   public displayedColumns: string[] = [
     'title',
     'author',
     'recommendations',
     'details',
   ];
+  public form: FormGroup;
 
   ngOnInit() {
+    this.form = this.fb.group({
+      filter: '',
+    });
+
     this.getAllBooks();
+  }
+
+  public applyFilter(filterValue: string) {
+    this.books.filter = filterValue.trim().toLowerCase();
+  }
+
+  public clearFilter(): void {
+    this.form.get('filter').patchValue('');
+    this.applyFilter('');
   }
 
   public openEditModal(): void {
@@ -37,7 +58,8 @@ export class BookListComponent implements OnInit {
   private getAllBooks() {
     this.booksService.getAllBooks().subscribe(
       (books: IBook[]) => {
-        this.books = books;
+        this.books = new MatTableDataSource(books);
+        this.books.sort = this.sort;
       },
       err => console.error,
     );

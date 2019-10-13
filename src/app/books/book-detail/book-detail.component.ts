@@ -45,7 +45,6 @@ export class BookDetailComponent implements OnInit {
     this.booksService.getBookById(id).subscribe(
       (book: IBook) => {
         this.book = book;
-        console.log(this.book);
       },
       err => console.error,
     );
