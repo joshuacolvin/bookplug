@@ -7,9 +7,10 @@ import { BookListComponent } from './book-list/book-list.component';
 import { MaterialModule } from '../material.module';
 import { BookModalComponent } from './book-modal/book-modal.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { BookSearchComponent } from './book-search/book-search.component';
 
 @NgModule({
-  declarations: [BookDetailComponent, BookListComponent, BookModalComponent],
+  declarations: [BookDetailComponent, BookListComponent, BookModalComponent, BookSearchComponent],
   imports: [
     CommonModule,
     BooksRoutingModule,
