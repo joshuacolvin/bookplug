@@ -3,7 +3,7 @@ import { BooksService } from './../books.service';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BookDetailComponent } from './book-detail.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 

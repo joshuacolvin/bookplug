@@ -1,5 +1,7 @@
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { MatDialog, MatTableDataSource, MatSort } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { BooksService } from './../books.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IBook } from '../book.types';
