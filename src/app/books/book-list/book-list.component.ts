@@ -14,15 +14,16 @@ export class BookListComponent implements OnInit {
   constructor(
     private booksService: BooksService,
     private dialog: MatDialog,
-    private fb: FormBuilder,
+    private fb: FormBuilder
   ) {}
 
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   public books: MatTableDataSource<IBook>;
   public displayedColumns: string[] = [
+    'thumbnail',
     'title',
-    'author',
+    'authors',
     'recommendations',
     'details',
   ];
@@ -56,12 +57,12 @@ export class BookListComponent implements OnInit {
   }
 
   private getAllBooks() {
-    this.booksService.getAllBooks().subscribe(
+    this.booksService.getAllBooks('wa6fdYMTBKRkfIgFzPdnmImjy113').subscribe(
       (books: IBook[]) => {
         this.books = new MatTableDataSource(books);
         this.books.sort = this.sort;
       },
-      err => console.error,
+      (err) => console.error
     );
   }
 }

@@ -17,7 +17,7 @@ export class BookModalComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private snackBar: MatSnackBar,
-    @Inject(MAT_DIALOG_DATA) public data: IBook,
+    @Inject(MAT_DIALOG_DATA) public data: IBook
   ) {}
 
   public form: FormGroup;
@@ -30,7 +30,7 @@ export class BookModalComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group({
       title: [this.data ? this.data.title : '', Validators.required],
-      author: [this.data ? this.data.author : '', Validators.required],
+      author: [this.data ? this.data.authors : '', Validators.required],
       recommendations:
         this.data && this.data.recommendations
           ? this.getRecommendations(this.data.recommendations)
@@ -45,7 +45,7 @@ export class BookModalComponent implements OnInit {
   }
 
   public deleteBook(): void {
-    this.booksService.deleteBook(this.data.id).subscribe(() => {
+    this.booksService.deleteBook(this.data.id).then(() => {
       this.snackBar.open('Book deleted', '', { duration: 2000 });
       this.router.navigate(['books']);
       this.dialogRef.close(false);
@@ -100,12 +100,5 @@ export class BookModalComponent implements OnInit {
       this.form.markAllAsTouched();
       return;
     }
-
-    this.booksService
-      .updateBook(this.data.id, this.form.value)
-      .subscribe((book: IBook) => {
-        this.snackBar.open(`${book.title} updated`, '', { duration: 2000 });
-        this.dialogRef.close(true);
-      });
   }
 }
