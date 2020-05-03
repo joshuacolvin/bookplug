@@ -1,3 +1,4 @@
+import { GoogleBooksApiService } from './google-book-api.service';
 import { BooksRoutingModule } from './books-routing.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -15,6 +16,6 @@ import { ReactiveFormsModule } from '@angular/forms';
     MaterialModule,
     ReactiveFormsModule,
   ],
-  entryComponents: [BookModalComponent],
+  providers: [GoogleBooksApiService],
 })
 export class BooksModule {}
