@@ -1,7 +1,24 @@
-<form [formGroup]="form">
-  <mat-form-field class="full-width">
-    <mat-label>Search</mat-label>
-    <input matInput formControlName="search" />
-    <mat-icon matSuffix>search</mat-icon>
-  </mat-form-field>
-</form>
+<div fxLayout="row">
+  <form fxFlex="50" [formGroup]="form">
+    <mat-form-field class="full-width">
+      <mat-label>Search</mat-label>
+      <input
+        matInput
+        formControlName="search"
+        placeholder="Search for a book"
+      />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </form>
+</div>
+
+<div fxLayout="row wrap" fxLayoutGap="10px">
+  <div fxFlex *ngFor="let book of books$ | async" class="book">
+    <img
+      class="grow"
+      [src]="book?.volumeInfo?.imageLinks?.thumbnail"
+      [alt]="book?.volumeInfo?.title + 'book cover'"
+      (click)="onSelect(book.volumeInfo.industryIdentifiers[0].identifier)"
+    />
+  </div>
+</div>

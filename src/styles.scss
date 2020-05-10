@@ -36,6 +36,24 @@ body {
 }
 
 .container {
-  max-width: 1170px;
+  max-width: 1225px;
   margin: 0 auto;
+}
+
+.book {
+  max-height: 217px;
+  max-width: 148px;
+  padding: 10px;
+  margin: 10px;
+  background-color: #f6f5f7;
+  border-radius: 4px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.grow {
+  transition: all 0.2s ease-in-out;
+}
+.grow:hover {
+  transform: scale(1.1);
 }

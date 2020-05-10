@@ -1,11 +1,8 @@
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { Observable } from 'rxjs';
 import { BooksService } from './../books.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IBook } from '../book.types';
-import { BookModalComponent } from '../book-modal/book-modal.component';
+import { ActivatedRoute, Data, Router } from '@angular/router';
 
 @Component({
   selector: 'app-book-list',
@@ -15,56 +12,21 @@ import { BookModalComponent } from '../book-modal/book-modal.component';
 export class BookListComponent implements OnInit {
   constructor(
     private booksService: BooksService,
-    private dialog: MatDialog,
-    private fb: FormBuilder
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  books$: Observable<IBook[]>;
+  uid: string;
 
-  public books: MatTableDataSource<IBook>;
-  public displayedColumns: string[] = [
-    'thumbnail',
-    'title',
-    'authors',
-    'recommendations',
-    'details',
-  ];
-  public form: FormGroup;
-
-  ngOnInit() {
-    this.form = this.fb.group({
-      filter: '',
-    });
-
-    this.getAllBooks();
-  }
-
-  public applyFilter(filterValue: string) {
-    this.books.filter = filterValue.trim().toLowerCase();
-  }
-
-  public clearFilter(): void {
-    this.form.get('filter').patchValue('');
-    this.applyFilter('');
-  }
-
-  public openEditModal(): void {
-    const dialogRef = this.dialog.open(BookModalComponent, {
-      width: '50%',
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.getAllBooks();
+  ngOnInit(): void {
+    this.route.data.subscribe((data: Data) => {
+      this.uid = data.user.uid;
+      this.books$ = this.booksService.getAllBooks(this.uid);
     });
   }
 
-  private getAllBooks() {
-    this.booksService.getAllBooks('wa6fdYMTBKRkfIgFzPdnmImjy113').subscribe(
-      (books: IBook[]) => {
-        this.books = new MatTableDataSource(books);
-        this.books.sort = this.sort;
-      },
-      (err) => console.error
-    );
+  onSelect(book: IBook): void {
+    this.router.navigate(['books', book.id]);
   }
 }

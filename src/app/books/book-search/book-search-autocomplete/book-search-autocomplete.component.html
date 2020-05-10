@@ -1,0 +1,26 @@
+<form [formGroup]="form">
+  <input
+    formControlName="search"
+    placeholder="Search books"
+    [matAutocomplete]="auto"
+  />
+  <mat-icon>search</mat-icon>
+</form>
+
+<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+  <mat-option
+    *ngFor="let book of books$ | async"
+    [value]="book"
+    (click)="onSelect(book.volumeInfo.industryIdentifiers[0].identifier)"
+  >
+    <div fxFlex fxLayout>
+      <div fxFlex="20">
+        <img [src]="book?.volumeInfo?.imageLinks?.thumbnail" alt="" />
+      </div>
+      <div fxFlex="80">
+        <p class="title">{{ book.volumeInfo.title }}</p>
+        <p class="author">{{ book?.volumeInfo?.authors?.toString() }}</p>
+      </div>
+    </div>
+  </mat-option>
+</mat-autocomplete>

@@ -1,9 +1,11 @@
-import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from './../../shared/confirm-dialog/confirm-dialog.component';
+import { BookDialogComponent } from './../book-dialog/book-dialog.component';
 import { BooksService } from './../books.service';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { IBook } from '../book.types';
-import { BookModalComponent } from '../book-modal/book-modal.component';
+import { ActivatedRoute, Params, Data } from '@angular/router';
+import { IBook, IRecommendation } from '../book.types';
+import { Observable, combineLatest } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-book-detail',
@@ -12,41 +14,64 @@ import { BookModalComponent } from '../book-modal/book-modal.component';
 })
 export class BookDetailComponent implements OnInit {
   constructor(
-    public dialog: MatDialog,
     private booksService: BooksService,
-    private activatedRoute: ActivatedRoute,
+    private route: ActivatedRoute,
+    public dialog: MatDialog
   ) {}
 
-  public book: IBook;
-  public bookId: string;
+  book$: Observable<IBook>;
+  bookId: string;
+  displayedColumns: string[] = ['recommendedBy', 'url', 'notes', 'actions'];
+  recommendations$: Observable<IRecommendation[]>;
+  uid: string;
 
   ngOnInit() {
-    this.activatedRoute.params.subscribe(params => {
-      this.bookId = params.id;
-      this.getBookById(this.bookId);
+    combineLatest(
+      this.route.params,
+      this.route.data,
+      (params: Params, data: Data) => ({
+        params,
+        data,
+      })
+    ).subscribe((res: { params: Params; data: Data }) => {
+      this.bookId = res.params.id;
+      this.book$ = this.booksService.getBookById(this.bookId);
+      this.recommendations$ = this.booksService.getAllRecommendationsForBook(
+        this.bookId
+      );
+      this.uid = res.data.user.uid;
     });
   }
 
-  public openEditModal(): void {
-    const dialogRef = this.dialog.open(BookModalComponent, {
-      width: '50%',
-      data: this.book,
-      disableClose: true,
+  addRecommendation() {
+    this.openDialog();
+  }
+
+  editRecommendation(recommendation: IRecommendation) {
+    this.openDialog(recommendation);
+  }
+
+  removeRecommendation(recommendationId: string) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Remove Recommendation',
+        message: 'Are you sure you want to remove this recommendation',
+      },
     });
 
-    dialogRef.afterClosed().subscribe((result: boolean) => {
-      if (result) {
-        this.getBookById(this.bookId);
+    dialogRef.afterClosed().subscribe((remove: boolean) => {
+      if (remove) {
+        this.booksService.removeRecommendation(this.bookId, recommendationId);
       }
     });
   }
 
-  private getBookById(id: string): void {
-    this.booksService.getBookById(id).subscribe(
-      (book: IBook) => {
-        this.book = book;
-      },
-      err => console.error,
-    );
+  openDialog(recommendation?: IRecommendation) {
+    const dialogRef = this.dialog.open(BookDialogComponent, {
+      data: recommendation,
+    });
+
+    dialogRef.componentInstance.bookId = this.bookId;
+    dialogRef.componentInstance.uid = this.uid;
   }
 }

@@ -1,4 +1,6 @@
-import { AngularFireAuth, AngularFireAuthModule } from '@angular/fire/auth';
+import { AuthGuard } from './auth/auth.guard';
+import { AuthResolver } from './auth/auth.resolver';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 import { BooksModule } from './books/books.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -25,9 +27,9 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [AuthResolver, AuthGuard],
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

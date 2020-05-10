@@ -1,6 +1,20 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <span>Recommndr</span>
+    <a [routerLink]="['']">Bookmrkd</a>
+    <span class="spacer"> </span>
+
+    <app-book-search-autocomplete
+      class="toolbar-search"
+    ></app-book-search-autocomplete>
+    <span class="spacer"> </span>
+    <button *ngIf="user$ | async" mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon class="user">account_circle</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <span>Logout</span>
+      </button>
+    </mat-menu>
   </mat-toolbar-row>
 </mat-toolbar>
 <div class="container">

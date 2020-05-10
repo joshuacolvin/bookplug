@@ -1,35 +1,31 @@
-import { GoogleBooksApiService } from './../google-book-api.service';
+import { GoogleBooksApiService } from './../../google-book-api.service';
+import { Observable } from 'rxjs';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { IGoogleBook } from '../../book.types';
 import { debounceTime, distinctUntilChanged, flatMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { IGoogleBook } from '../book.types';
-import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-book-search',
-  templateUrl: './book-search.component.html',
-  styleUrls: ['./book-search.component.scss'],
+  selector: 'app-book-search-autocomplete',
+  templateUrl: './book-search-autocomplete.component.html',
+  styleUrls: ['./book-search-autocomplete.component.scss'],
 })
-export class BookSearchComponent implements OnInit {
+export class BookSearchAutocompleteComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private googleBooksApiService: GoogleBooksApiService,
     private router: Router
   ) {}
 
-  form: FormGroup;
   books$: Observable<IGoogleBook[]>;
+  form: FormGroup;
 
   ngOnInit(): void {
     this.form = this.fb.group({
       search: [''],
     });
 
-    this.onChanges();
-  }
-
-  onChanges(): void {
     this.books$ = this.form.get('search').valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged(),
@@ -39,7 +35,14 @@ export class BookSearchComponent implements OnInit {
     );
   }
 
+  displayFn(book: IGoogleBook): string {
+    if (book) {
+      return book.volumeInfo.title;
+    }
+  }
+
   onSelect(isbn: string): void {
+    this.form.reset();
     this.router.navigateByUrl(`isbn/${isbn}`);
   }
 }

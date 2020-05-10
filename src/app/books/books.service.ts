@@ -5,6 +5,7 @@ import {
   AngularFirestore,
   AngularFirestoreCollection,
   AngularFirestoreDocument,
+  CollectionReference,
 } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import * as firebase from 'firebase';
@@ -20,7 +21,7 @@ export class BooksService {
   }
 
   // Book Actions
-  public addBook(book: IBook): Observable<IBook> {
+  public addBook(book: Partial<IBook>): Observable<IBook> {
     const booksCollection = this.db.collection<IBook>('books');
 
     const id: string = this.db.createId();
@@ -36,7 +37,7 @@ export class BooksService {
 
   public async deleteBook(bookId: string): Promise<void> {
     const bookRef: AngularFirestoreDocument<IBook> = this.db.doc<IBook>(
-      `books/${bookId}`,
+      `books/${bookId}`
     );
     const path = `books/${bookId}/recommendations`;
 
@@ -47,7 +48,7 @@ export class BooksService {
     recommendations.forEach(
       (recommendation: firebase.firestore.QueryDocumentSnapshot) => {
         recommendation.ref.delete();
-      },
+      }
     );
 
     return bookRef.delete();
@@ -56,11 +57,11 @@ export class BooksService {
   public getAllBooks(userId: string): Observable<IBook[]> {
     const bookRef: AngularFirestoreCollection<IBook> = this.db.collection<
       IBook
-    >('books', ref =>
+    >('books', (ref: CollectionReference) =>
       ref
         .where('uid', '==', userId)
         .orderBy('recommendationCount', 'desc')
-        .orderBy('createdAt', 'desc'),
+        .orderBy('createdAt', 'desc')
     );
 
     return bookRef.valueChanges();
@@ -69,8 +70,8 @@ export class BooksService {
   public getAllBooksByDate(userId: string): Observable<IBook[]> {
     const bookRef: AngularFirestoreCollection<IBook> = this.db.collection<
       IBook
-    >('books', ref =>
-      ref.where('uid', '==', userId).orderBy('createdAt', 'desc'),
+    >('books', (ref) =>
+      ref.where('uid', '==', userId).orderBy('createdAt', 'desc')
     );
 
     return bookRef.valueChanges();
@@ -83,39 +84,36 @@ export class BooksService {
   // Recommendation Actions
   public addRecommendation(
     bookId: string,
-    recommendation: IRecommendation,
-  ): Observable<IBook> {
+    recommendation: IRecommendation
+  ): Observable<IRecommendation[]> {
     const recommendationId: string = this.db.createId();
     const bookRef: AngularFirestoreDocument<IBook> = this.db
       .collection('books')
       .doc<IBook>(bookId);
+    const recommendationsRef: AngularFirestoreCollection<IRecommendation> = bookRef.collection(
+      'recommendations'
+    );
 
     recommendation.createdAt = firebase.firestore.FieldValue.serverTimestamp();
 
-    bookRef
-      .collection('recommendations')
-      .doc(recommendationId)
-      .set({
-        id: recommendationId,
-        recommendedBy: recommendation.recommendedBy,
-        url: recommendation.url,
-        uid: recommendation.uid,
-        createdAt: recommendation.createdAt,
-        notes: recommendation.notes,
-      });
+    recommendationsRef.doc(recommendationId).set({
+      id: recommendationId,
+      recommendedBy: recommendation.recommendedBy,
+      url: recommendation.url,
+      uid: recommendation.uid,
+      createdAt: recommendation.createdAt,
+      notes: recommendation.notes,
+    });
 
     bookRef.update({
       recommendationCount: firebase.firestore.FieldValue.increment(1),
     });
 
-    return this.db
-      .collection('books')
-      .doc<IBook>(bookId)
-      .valueChanges();
+    return recommendationsRef.valueChanges();
   }
 
   public getAllRecommendationsForBook(
-    bookId: string,
+    bookId: string
   ): Observable<IRecommendation[]> {
     return this.db
       .collection('books')
@@ -126,14 +124,14 @@ export class BooksService {
 
   public removeRecommendation(
     bookId: string,
-    recommendationId: string,
+    recommendationId: string
   ): Observable<IRecommendation[]> {
     const bookRef: AngularFirestoreDocument<IBook> = this.db
       .collection('books')
       .doc(bookId);
-    const recommendationsRef: AngularFirestoreCollection<
-      IRecommendation
-    > = bookRef.collection('recommendations');
+    const recommendationsRef: AngularFirestoreCollection<IRecommendation> = bookRef.collection(
+      'recommendations'
+    );
 
     recommendationsRef.doc(recommendationId).delete();
 
@@ -147,11 +145,9 @@ export class BooksService {
   public updateRecommendation(
     bookId: string,
     recommendationId: string,
-    recommendation: IRecommendation,
+    recommendation: IRecommendation
   ): Observable<IRecommendation[]> {
-    const recommendationsRef: AngularFirestoreCollection<
-      IRecommendation
-    > = this.db
+    const recommendationsRef: AngularFirestoreCollection<IRecommendation> = this.db
       .collection('books')
       .doc(bookId)
       .collection('recommendations');

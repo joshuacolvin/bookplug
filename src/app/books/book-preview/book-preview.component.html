@@ -1,0 +1,22 @@
+<div class="container">
+  <div fxfill fxlayout="column" *ngIf="book$ | async; let book">
+    <div fxFlex fxLayout>
+      <div fxFlex="20">
+        <img class="book" [src]="book.volumeInfo.imageLinks.thumbnail" alt="" />
+      </div>
+      <div fxFlex="60">
+        <h1 class="title">{{ book.volumeInfo.title }}</h1>
+        <p class="author">{{ book.volumeInfo.authors }}</p>
+
+        <div class="actions">
+          <button mat-flat-button color="primary" (click)="addBook(book)">
+            Add Book
+          </button>
+        </div>
+
+        <h2>Description</h2>
+        <p class="description">{{ book.volumeInfo.description }}</p>
+      </div>
+    </div>
+  </div>
+</div>
