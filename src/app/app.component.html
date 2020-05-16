@@ -4,6 +4,7 @@
     <span class="spacer"> </span>
 
     <app-book-search-autocomplete
+      *ngIf="user$ | async"
       class="toolbar-search"
     ></app-book-search-autocomplete>
     <span class="spacer"> </span>
