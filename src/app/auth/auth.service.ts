@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, from } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +29,15 @@ export class AuthService {
 
   get id(): string {
     return this.authenticated ? this.user.uid : '';
+  }
+
+  public createUserWithEmailAndPassword(
+    email: string,
+    password: string
+  ): Observable<firebase.auth.UserCredential> {
+    return from(
+      this.afAuth.auth.createUserWithEmailAndPassword(email, password)
+    );
   }
 
   public getAuthState(): Observable<firebase.User> {
