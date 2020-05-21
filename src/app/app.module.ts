@@ -1,4 +1,3 @@
-import { AuthGuard } from './auth/auth.guard';
 import { AuthResolver } from './auth/auth.resolver';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { BooksModule } from './books/books.module';
@@ -14,6 +13,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 
 @NgModule({
   declarations: [AppComponent],
@@ -29,7 +29,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
     AngularFirestoreModule,
     AngularFireAuthModule,
   ],
-  providers: [AuthResolver, AuthGuard],
+  providers: [AuthResolver, AngularFireAuthGuard],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

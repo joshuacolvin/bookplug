@@ -1,3 +1,4 @@
+import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 import { SharedModule } from './../shared/shared.module';
 import { GoogleBooksApiService } from './google-book-api.service';
 import { BooksRoutingModule } from './books-routing.module';
