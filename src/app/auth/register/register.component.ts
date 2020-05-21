@@ -34,16 +34,16 @@ export class RegisterComponent implements OnInit {
       },
       (err) => {
         switch (err.message) {
-          case 'auth/email-already-in-use':
+          case 'EMAIL_EXISTS':
             this.error = 'Email is already in use';
             break;
-          case 'EMAIL_NOT_FOUND':
+          case 'INVALID_EMAIL':
             this.error = 'Email not valid';
             break;
-          case 'auth/operation-not-allowed':
+          case 'OPERATION_NOT_ALLOWED':
             this.error = 'Email/password accounts not supported';
             break;
-          case 'auth/weak-password':
+          case 'WEAK_PASSWORD':
             this.error = 'Password not strong enough';
             break;
           default:
