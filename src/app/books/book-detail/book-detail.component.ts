@@ -34,12 +34,14 @@ export class BookDetailComponent implements OnInit {
         data,
       })
     ).subscribe((res: { params: Params; data: Data }) => {
-      this.bookId = res.params.id;
+      const { params, data } = res;
+
+      this.bookId = params.id;
       this.book$ = this.booksService.getBookById(this.bookId);
       this.recommendations$ = this.booksService.getAllRecommendationsForBook(
         this.bookId
       );
-      this.uid = res.data.user.uid;
+      this.uid = data.user.uid;
     });
   }
 
