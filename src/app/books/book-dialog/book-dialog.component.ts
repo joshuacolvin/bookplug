@@ -1,9 +1,11 @@
 import { IRecommendation } from './../book.types';
 import { BooksService } from './../books.service';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Component, OnInit, Input, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-book-dialog',
   templateUrl: './book-dialog.component.html',
@@ -15,7 +17,7 @@ export class BookDialogComponent implements OnInit {
     private booksService: BooksService,
     private dialogRef: MatDialogRef<BookDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IRecommendation
-  ) {}
+  ) { }
 
   @Input() bookId: string;
   @Input() uid: string;
@@ -29,6 +31,7 @@ export class BookDialogComponent implements OnInit {
   addRecommendation() {
     this.booksService
       .addRecommendation(this.bookId, { ...this.form.value, uid: this.uid })
+      .pipe(untilDestroyed(this))
       .subscribe(() => {
         this.dialogRef.close();
       });
@@ -39,7 +42,9 @@ export class BookDialogComponent implements OnInit {
   }
 
   onSave() {
-    this.data ? this.updateRecommendation() : this.addRecommendation();
+    if (this.form.valid) {
+      this.data ? this.updateRecommendation() : this.addRecommendation();
+    }
   }
 
   updateRecommendation() {
@@ -49,6 +54,7 @@ export class BookDialogComponent implements OnInit {
         ...this.form.value,
         uid: this.uid,
       })
+      .pipe(untilDestroyed(this))
       .subscribe(() => {
         this.dialogRef.close();
       });
@@ -57,7 +63,10 @@ export class BookDialogComponent implements OnInit {
   private createForm(): void {
     this.form = this.fb.group({
       id: [this.data ? this.data.id : ''],
-      recommendedBy: [this.data ? this.data.recommendedBy : ''],
+      recommendedBy: [
+        this.data ? this.data.recommendedBy : '',
+        Validators.required,
+      ],
       url: [this.data ? this.data.url : ''],
       notes: [this.data ? this.data.notes : ''],
     });

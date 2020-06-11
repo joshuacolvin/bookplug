@@ -1,18 +1,13 @@
 <form [formGroup]="form">
-  <input
-    formControlName="search"
-    placeholder="Search books"
-    [matAutocomplete]="auto"
-  />
-  <mat-icon>search</mat-icon>
+  <mat-form-field>
+    <input matInput formControlName="search" placeholder="Search books" [matAutocomplete]="auto" />
+    <mat-icon>search</mat-icon>
+  </mat-form-field>
 </form>
 
 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-  <mat-option
-    *ngFor="let book of books$ | async"
-    [value]="book"
-    (click)="onSelect(book.volumeInfo.industryIdentifiers[0].identifier)"
-  >
+  <mat-option *ngFor="let book of books$ | async" [value]="book"
+    (click)="onSelect(book.volumeInfo.industryIdentifiers[0].identifier)">
     <div fxFlex fxLayout>
       <div fxFlex="20">
         <img [src]="book?.volumeInfo?.imageLinks?.thumbnail" alt="" />

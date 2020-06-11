@@ -32,3 +32,22 @@ table button {
 .add-btn {
   margin-right: 5px;
 }
+
+.details {
+  margin-left: 15px;
+  color: hsl(0, 0%, 45%);
+  padding-right: 40px;
+
+  p {
+    margin: 5px 0;
+    font-size: 13px;
+  }
+}
+
+.subtitle {
+  color: hsl(0, 0%, 45%);
+}
+
+.mat-expansion-panel-header-title {
+  padding: 18px 0;
+}

@@ -3,8 +3,17 @@
     <div fxFlex fxLayout>
       <div fxFlex.gt-lg="20" fxFlex="30">
         <img class="book" [src]="book.thumbnail" alt="" />
+        <div class="details">
+          <p>{{ book.categories }}</p>
+          <p>
+            Published by {{ book.publisher }}
+            <span *ngIf="book?.publishedDate">on {{ book.publishedDate | date }}</span>
+          </p>
+          <p>{{ book.pageCount }} pages</p>
+          <p>ISBN {{ book.isbn }}</p>
+        </div>
       </div>
-      <div fxFlex.gt-lg="80" fxFlex="70">
+      <div fxFlex.gt-lg="70" fxFlex="60">
         <h1 class="title">
           {{ book.title }}
           <span *ngIf="book.subtitle">{{ book.subtitle }}</span>
@@ -12,65 +21,73 @@
         <p class="author">{{ book.authors }}</p>
 
         <div class="recommendations">
-          <div fxLayout="row" fxLayoutAlign="start end">
-            <h2 fxFlex>Recommendations</h2>
-            <button
-              mat-mini-fab
-              color="primary"
-              class="add-btn"
-              (click)="addRecommendation()"
-            >
-              <mat-icon>add</mat-icon>
-            </button>
-          </div>
-          <div fxLayout="column">
-            <table mat-table [dataSource]="recommendations$ | async">
-              <ng-container matColumnDef="recommendedBy">
-                <th mat-header-cell *matHeaderCellDef>Recommended By</th>
-                <td mat-cell *matCellDef="let element">
-                  {{ element.recommendedBy }}
-                </td>
-              </ng-container>
+          <mat-accordion>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <span [matBadge]="book.recommendationCount" [matBadgeHidden]="book.recommendationCount === 0"
+                    matBadgePosition="after" matBadgeOverlap="false">Recommendations</span>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div fxLayout="row" fxLayoutAlign="end">
+                <button mat-mini-fab color="primary" class="add-btn" (click)="addRecommendation()">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
 
-              <ng-container matColumnDef="url">
-                <th mat-header-cell *matHeaderCellDef>Url</th>
-                <td mat-cell *matCellDef="let element">
-                  {{ element.url }}
-                </td>
-              </ng-container>
+              <div fxLayout="column">
+                <table mat-table [dataSource]="recommendations$ | async">
+                  <ng-container matColumnDef="recommendedBy">
+                    <th mat-header-cell *matHeaderCellDef>Recommended By</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.recommendedBy }}
+                    </td>
+                  </ng-container>
 
-              <ng-container matColumnDef="notes">
-                <th mat-header-cell *matHeaderCellDef>Notes</th>
-                <td mat-cell *matCellDef="let element">
-                  {{ element.notes }}
-                </td>
-              </ng-container>
+                  <ng-container matColumnDef="url">
+                    <th mat-header-cell *matHeaderCellDef>Url</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.url }}
+                    </td>
+                  </ng-container>
 
-              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let element">
-                  <button
-                    mat-mini-fab
-                    color="primary"
-                    (click)="editRecommendation(element)"
-                  >
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                  <button
-                    mat-mini-fab
-                    color="warn"
-                    (click)="removeRecommendation(element.id)"
-                  >
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </td>
-              </ng-container>
+                  <ng-container matColumnDef="notes">
+                    <th mat-header-cell *matHeaderCellDef>Notes</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.notes }}
+                    </td>
+                  </ng-container>
 
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-            </table>
-          </div>
+                  <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element">
+                      <button mat-mini-fab color="primary" (click)="editRecommendation(element)">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button mat-mini-fab color="warn" (click)="removeRecommendation(element.id)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                </table>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
         </div>
+      </div>
+      <div fxFlex="10">
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="onDeleteBook()">
+            <mat-icon>delete</mat-icon>
+            <span>Delete Book</span>
+          </button>
+        </mat-menu>
       </div>
     </div>
   </div>

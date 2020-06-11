@@ -3,7 +3,9 @@ import { BooksService } from './../books.service';
 import { Component, OnInit } from '@angular/core';
 import { IBook } from '../book.types';
 import { ActivatedRoute, Data, Router } from '@angular/router';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-book-list',
   templateUrl: './book-list.component.html',
@@ -14,16 +16,17 @@ export class BookListComponent implements OnInit {
     private booksService: BooksService,
     private route: ActivatedRoute,
     private router: Router
-  ) {}
+  ) { }
 
   books$: Observable<IBook[]>;
   uid: string;
 
   ngOnInit(): void {
-    this.route.data.subscribe((data: Data) => {
-      this.uid = data.user.uid;
-      this.books$ = this.booksService.getAllBooks(this.uid);
-    });
+    this.route.data.pipe(untilDestroyed(this))
+      .subscribe((data: Data) => {
+        this.uid = data.user.uid;
+        this.books$ = this.booksService.getAllBooks(this.uid);
+      });
   }
 
   onSelect(book: IBook): void {

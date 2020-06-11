@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, from } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Injectable({
   providedIn: 'root',
 })
@@ -10,7 +12,7 @@ export class AuthService {
   private _user: firebase.User;
 
   constructor(public afAuth: AngularFireAuth) {
-    afAuth.authState.subscribe((user: firebase.User) => {
+    afAuth.authState.pipe(untilDestroyed(this)).subscribe((user: firebase.User) => {
       this.user = user;
     });
   }

@@ -4,7 +4,9 @@ import { GoogleBooksApiService } from './../google-book-api.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router, Data } from '@angular/router';
 import { Observable, combineLatest } from 'rxjs';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-book-preview',
   templateUrl: './book-preview.component.html',
@@ -16,7 +18,7 @@ export class BookPreviewComponent implements OnInit {
     private router: Router,
     private bookService: BooksService,
     private googleBooksApiService: GoogleBooksApiService
-  ) {}
+  ) { }
 
   book$: Observable<IGoogleBook>;
   uid: string;
@@ -25,7 +27,7 @@ export class BookPreviewComponent implements OnInit {
     combineLatest(this.route.params, this.route.data, (params, data) => ({
       params,
       data,
-    })).subscribe((res: { params: Params; data: Data }) => {
+    })).pipe(untilDestroyed(this)).subscribe((res: { params: Params; data: Data }) => {
       const { isbn } = res.params;
       this.uid = res.data.user.uid;
       this.getBookByIsbn(isbn);
@@ -58,7 +60,7 @@ export class BookPreviewComponent implements OnInit {
       uid: this.uid,
     };
 
-    this.bookService.addBook(bookToAdd).subscribe((book: IBook) => {
+    this.bookService.addBook(bookToAdd).pipe(untilDestroyed(this)).subscribe((book: IBook) => {
       this.router.navigateByUrl(`books/${book.id}`);
     });
   }

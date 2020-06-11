@@ -15,6 +15,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
   imports: [
@@ -30,6 +31,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatInputModule,
     MatListModule,
     MatMenuModule,
+    MatSidenavModule,
     MatSnackBarModule,
     MatSortModule,
     MatTableModule,
@@ -48,10 +50,11 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatInputModule,
     MatListModule,
     MatMenuModule,
+    MatSidenavModule,
     MatSnackBarModule,
     MatSortModule,
     MatTableModule,
     MatToolbarModule,
   ],
 })
-export class MaterialModule {}
+export class MaterialModule { }
